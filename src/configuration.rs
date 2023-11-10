@@ -17,6 +17,7 @@ pub struct BarBundle<T: Percentage + Component + TypePath> {
     pub height: BarHeight<T>,
     pub orientation: BarOrientation<T>,
     pub border: BarBorder<T>,
+    pub visibility: BarVisibility<T>,
 }
 
 impl<T: Percentage + Component + TypePath> Default for BarBundle<T> {
@@ -27,6 +28,7 @@ impl<T: Percentage + Component + TypePath> Default for BarBundle<T> {
             height: BarHeight::default(),
             orientation: BarOrientation::default(),
             border: BarBorder::default(),
+            visibility: BarVisibility::default(),
         }
     }
 }
@@ -150,6 +152,23 @@ pub enum BarOrientation<T: Percentage + Component + TypePath> {
     #[default]
     Horizontal,
     Vertical,
+
+    _Internal(Infallible, PhantomData<T>),
+}
+
+/// Component to configure the visibility of the bar
+///
+/// # Examples
+///
+/// ```
+/// use bevy_health_bar3d::prelude::BarVisibility;
+/// commands.entity(entity).insert(BarVisibility::<Health>::Hidden);
+/// ```
+#[derive(Component, Debug, Clone, PartialEq, Eq, Default)]
+pub enum BarVisibility<T: Percentage + Component + TypePath> {
+    #[default]
+    Visible,
+    Hidden,
 
     _Internal(Infallible, PhantomData<T>),
 }

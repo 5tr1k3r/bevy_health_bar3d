@@ -4,7 +4,9 @@ use bevy::asset::load_internal_asset;
 use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
 
-use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
+use crate::configuration::{
+    BarHeight, BarOffset, BarVisibility, BarWidth, ForegroundColor, Percentage,
+};
 use crate::constants::{BAR_SHADER_HANDLE, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
 use crate::material::BarMaterial;
 use crate::mesh::MeshHandles;
@@ -67,14 +69,20 @@ fn spawn<T: Percentage + Component + TypePath>(
             Option<&BarHeight<T>>,
             Option<&BarOrientation<T>>,
             Option<&BarBorder<T>>,
+            Option<&BarVisibility<T>>,
         ),
         Added<T>,
     >,
 ) {
     query.iter().for_each(
-        |(entity, percentage, offset, width, height, orientation, border)| {
+        |(entity, percentage, offset, width, height, orientation, border, visibility)| {
             let width = width.map(|it| it.get()).unwrap_or(DEFAULT_WIDTH);
             let orientation = orientation.unwrap_or(&BarOrientation::Horizontal);
+
+            let visibility = match visibility.unwrap_or(&BarVisibility::Visible) {
+                BarVisibility::Visible => Visibility::Visible,
+                BarVisibility::Hidden => Visibility::Hidden,
+            };
 
             let height = height
                 .map(|it| match it {
@@ -127,6 +135,7 @@ fn spawn<T: Percentage + Component + TypePath>(
                     MaterialMeshBundle {
                         mesh,
                         material,
+                        visibility,
                         ..default()
                     },
                     NotShadowCaster,
