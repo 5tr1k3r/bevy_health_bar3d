@@ -48,7 +48,7 @@ impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
 pub struct WithBar<T: Percentage + Component>(Entity, #[reflect(ignore)] PhantomData<T>);
 
 impl<T: Percentage + Component> WithBar<T> {
-    fn get(&self) -> Entity {
+    pub fn get(&self) -> Entity {
         self.0
     }
 }
